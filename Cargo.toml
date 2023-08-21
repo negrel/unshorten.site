@@ -1,0 +1,33 @@
+[package]
+name = "unshorten-site"
+version = "0.1.0"
+edition = "2021"
+license-file = "LICENSE"
+description = "URLs unshortener"
+documentation = "https://docs.rs/unshorten.site"
+repository = "https://github.com/negrel/unshorten.site"
+readme = "README.md"
+authors = ["Alexandre Negrel <alexandre@negrel.dev>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4"
+serde = { version = "1.0.183", features = ["derive"] }
+thiserror = "1.0.47"
+url = { version = "2", features = ["serde"] }
+mime = "0.3"
+# Tracing (part of tokio ecosystem).
+tracing = { version = "0.1", features = ["log"] }
+# Compatibility layer between `log` crate and `tracing` crate.
+tracing-log = { version = "0.1" }
+# Utility crate to compose `tracing` subscribers.
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+# Tracing formatter.
+tracing-bunyan-formatter = "0.3"
+# Tracing support for actix-web
+tracing-actix-web = "0.7"
+futures = "0.3"
+reqwest = { version = "0.11", features = ["rustls-tls"], default-features = false }
+prometheus-client = "0.21"
+
