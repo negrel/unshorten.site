@@ -1,0 +1,12 @@
+@import 'npm:normalize.css/normalize.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -.125em;
+}
+
