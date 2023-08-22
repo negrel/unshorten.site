@@ -19,7 +19,7 @@ enum UnshortenResult {
     Error(String),
 }
 
-#[tracing::instrument[skip_all]]
+#[tracing::instrument(skip_all)]
 pub async fn post_unshorten_urls(body: web::Json<UnshortenRequest>) -> HttpResponse {
     let request = body.into_inner();
 
@@ -40,4 +40,16 @@ pub async fn post_unshorten_urls(body: web::Json<UnshortenRequest>) -> HttpRespo
     let results = join_all(futures).await;
 
     HttpResponse::Ok().json(UnshortenResponse { results })
+}
+
+#[tracing::instrument(skip_all)]
+pub async fn get_unshorten_url(path: web::Path<String>) -> HttpResponse {
+    match reqwest::get(path.into_inner()).await {
+        Ok(response) => HttpResponse::Ok().json(UnshortenResult::Url(response.url().to_string())),
+        Err(err) => {
+            let err = err.to_string();
+            tracing::error!(err);
+            HttpResponse::BadRequest().json(UnshortenResult::Error(err))
+        }
+    }
 }

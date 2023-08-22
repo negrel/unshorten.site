@@ -7,7 +7,7 @@ use actix_web::{
 use mime::APPLICATION_JSON;
 use tracing_actix_web::TracingLogger;
 
-use crate::unshorten::post_unshorten_urls;
+use crate::unshorten::{get_unshorten_url, post_unshorten_urls};
 
 mod metrics;
 mod tracing;
@@ -30,6 +30,9 @@ async fn main() -> Result<(), io::Error> {
             .app_data(web::FormConfig::default().error_handler(form_error_handler))
             .app_data(web::QueryConfig::default().error_handler(query_error_handler))
             .service(web::resource("/api/v1/unshorten").route(web::post().to(post_unshorten_urls)))
+            .service(
+                web::resource("/api/v1/unshorten/{url:.*}").route(web::get().to(get_unshorten_url)),
+            )
     })
     .bind(("0.0.0.0", 8080))?;
 
