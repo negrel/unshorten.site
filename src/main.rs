@@ -13,6 +13,8 @@ mod metrics;
 mod tracing;
 mod unshorten;
 
+use metrics::setup_metrics;
+
 #[actix_web::main]
 async fn main() -> Result<(), io::Error> {
     // Setup tracing.
@@ -22,9 +24,12 @@ async fn main() -> Result<(), io::Error> {
         std::io::stdout,
     );
 
-    let server = HttpServer::new(|| {
+    let prometheus_metrics = setup_metrics();
+
+    let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
+            .wrap(prometheus_metrics.clone())
             .app_data(web::JsonConfig::default().error_handler(json_error_handler))
             .app_data(web::PathConfig::default().error_handler(path_error_handler))
             .app_data(web::FormConfig::default().error_handler(form_error_handler))

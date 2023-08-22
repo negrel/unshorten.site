@@ -48,7 +48,7 @@
               pname = "unshorten.site";
               version = "0.1.0";
               src = ./.;
-              cargoSha256 = "sha256-rWPJW0nImkmECDNBcnM+fVfLgGcYwnmegBYag8j5L1Y=";
+              cargoSha256 = "sha256-RmMdGB1+u4EpqI6InnrItergfUBcnVbrtihkj66YPO4=";
               nativeBuildInputs = with fenixPkgs; [
                 clippy
                 rustfmt
