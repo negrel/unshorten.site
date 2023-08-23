@@ -3,6 +3,12 @@ import http from 'k6/http'
 
 const SERVER_ENDPOINT= 'http://unshorten-site:8080/api/v1'
 
+function checkAndLog(v, checks) {
+  if (!check(v, checks)) {
+    console.warn("check failed on", JSON.stringify(v))
+  }
+}
+
 /**
  * Test options.
  * https://k6.io/docs/using-k6/k6-options/
@@ -34,7 +40,7 @@ export default function () {
 	group('GET /unshorten/{url}', () => {
 		group('nonexistent URL', () => {
 			const response = http.get(`${SERVER_ENDPOINT}/unshorten/http://nonexistent.example.com/service`)
-			check(response, {
+			checkAndLog(response, {
 				'status code is 400': (r) => r.status === 400,
 				'body contains an error': (r) => r.json().error === 'error sending request for url (http://nonexistent.example.com/service): error trying to connect: dns error: failed to lookup address information: Name or service not known'
 			})
@@ -42,7 +48,7 @@ export default function () {
 
 		group('invalid URL', () => {
 			const response = http.get(`${SERVER_ENDPOINT}/unshorten/invalid.example.com/service`)
-			check(response, {
+			checkAndLog(response, {
 				'status code is 400': (r) => r.status === 400,
 				'body contains an error': (r) => r.json().error === 'builder error: relative URL without a base'
 			})
@@ -50,7 +56,7 @@ export default function () {
 
 		group('valid URL', () => {
 			const response = http.get(`${SERVER_ENDPOINT}/unshorten/${urls[0]}`)
-			check(response, {
+			checkAndLog(response, {
 				'status code is 200': (r) => r.status === 200,
 				'body contains an url': (r) => r.json().url !== urls[0]
 			})
@@ -73,7 +79,7 @@ export default function () {
 			}
 		})
 
-		check(response, {
+		checkAndLog(response, {
 			'status code is 200': (r) => r.status === 200,
 			'body contains 4 results': (r) => r.json().results.length === 4,
 			'first result is an error': (r) => r.json().results[0].error === 'builder error: relative URL without a base',
