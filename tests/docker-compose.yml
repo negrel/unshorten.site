@@ -1,0 +1,24 @@
+version: '3'
+services:
+  static-url-shortner:
+    image: node:lts-alpine
+    working_dir: /app
+    command: /app/main.mjs
+    volumes:
+      - ./static-url-shortner/:/app/:ro
+
+  unshorten-site:
+    image: "unshorten.site:dev"
+    # Uncomment to use local debug binary instead of rebuilding entire image.
+    # command: /bin/unshorten-site
+    volumes: []
+      # Uncomment to use local debug binary instead of rebuilding entire image.
+      # - ../target/debug/unshorten-site:/bin/unshorten-site:ro
+
+  k6:
+    image: grafana/k6:0.46.0
+    working_dir: /app
+    command: run /app/main.js
+    volumes:
+      - ./static-url-shortner/urls.json:/etc/urls.json:ro
+      - ./k6/:/app

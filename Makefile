@@ -6,6 +6,10 @@ include $(repository_root)/variables.mk
 dev/start:
 	cargo run | bunyan
 
+.PHONY: dev/build
+dev/build:
+	cargo build
+
 .PHONY: docker/build
 docker/build:
 	nix build .#docker
@@ -23,4 +27,9 @@ lint/rust:
 
 .PHONY: lint
 lint: lint/rust
+
+.PHONY: tests
+tests:
+	cd tests/ && docker compose up --exit-code-from k6
+	cd tests/ && docker compose down
 

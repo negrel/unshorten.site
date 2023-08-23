@@ -4,14 +4,14 @@ This repository hosts source code of [unshorten.site](https://unshorten.site/) w
 
 ## Why ?
 
-Building an industrialized web server in Rust.
+To learn how to build an industrialized web server in Rust.
 
 ## Getting started
 
 ### Building the project
 
 ```shell
-make build
+make docker/build
 ```
 
 ### Running the tests
