@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: Unshorten.site
+  contact:
+    email: alexandre+unshorten.site@negrel.dev
+  version: 1.0.0
+servers:
+  - url: https://unshorten.site/api/v1
+paths:
+  /api/v1/unshorten/{url}:
+    get:
+      summary: Unshorten a single URL.
+      parameters:
+        - name: url
+          in: path
+          description: URL to unshorten.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnshortenOk"
+        '400':
+          description: Failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnshortenError"
+  /api/v1/unshorten:
+    post:
+      summary: Unshorten a batch of URLs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ["urls"]
+              properties:
+                urls:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+            example:
+                urls:
+                  - "https://qtl.ink/❤️❤️❤️"
+                  - "https://qtl.ink/❤️💙️❤️"
+
+      responses:
+        '200':
+          description: Batch operation always return 200.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["results"]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UnshortenResult"
+              example:
+                results:
+                  - url: https://www.negrel.dev
+                  - error: "failed to unshorten URL"
+                  - url: https://github.com/negrel
+components:
+  schemas:
+    UnshortenResult:
+      type: object
+      properties:
+        data:
+          oneOf:
+            - $ref: "#/components/schemas/UnshortenOk"
+            - $ref: "#/components/schemas/UnshortenError"
+    UnshortenOk:
+      type: object
+      required: ["url"]
+      properties:
+        url:
+          type: string
+          format: uri
+          example: "https://wwww.negrel.dev"
+    UnshortenError:
+      type: object
+      required: ["error"]
+      properties:
+        error:
+          type: string
+          example: "failed to unshorten URL"
