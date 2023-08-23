@@ -1,0 +1,30 @@
+name: release
+on:
+  release:
+    types: ["published"]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: cachix/install-nix-action@v21
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: printenv
+      - uses: dawidd6/action-download-artifact@v2
+        with:
+          name: docker-image
+          workflow: push.yml
+      - run: docker load < result
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: "${{ secrets.DOCKERHUB_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_PASSWORD }}"
+      - name: Publish to docker hub
+        run: |
+          for tag in $(.github/scripts/tags.sh $GITHUB_REF_NAME); do
+            docker tag "unshorten.site:dev" "docker.io/negrel/unshorten.site:$tag"
+            docker push "docker.io/negrel/unshorten.site:$tag"
+          done
+
+

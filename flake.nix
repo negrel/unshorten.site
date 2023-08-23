@@ -36,7 +36,6 @@
                   rust-analyzer-nightly
                 ]
               );
-              LD_LIBRARY_PATH = "";
             };
           };
           packages = rec {
