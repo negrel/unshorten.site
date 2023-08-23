@@ -20,7 +20,7 @@ enum UnshortenResult {
     Error(String),
 }
 
-#[tracing::instrument(skip_all)]
+#[tracing::instrument()]
 pub async fn post_unshorten_urls(body: web::Json<UnshortenRequest>) -> HttpResponse {
     let request = body.into_inner();
 
