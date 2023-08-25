@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use actix_web::{web, HttpResponse};
 use futures::future::join_all;
 use reqwest::IntoUrl;
@@ -46,7 +48,18 @@ pub async fn get_unshorten_url(url: web::Path<String>) -> HttpResponse {
 async fn unshorten_url<T: IntoUrl>(url: T) -> UnshortenResult {
     let url = url.as_str();
 
-    match reqwest::get(url).await {
+    // Request with timeout.
+    let result = match tokio::time::timeout(Duration::from_secs(3), reqwest::get(url)).await {
+        Ok(r) => r,
+        Err(err) => {
+            let err = err.to_string();
+            tracing::error!(err);
+            return UnshortenResult::Error(err);
+        }
+    };
+
+    // Handle request result.
+    match result {
         Ok(response) => UnshortenResult::Url(response.url().to_string()),
         Err(err) => {
             if let Some(err_url) = err.url() {
