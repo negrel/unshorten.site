@@ -7,13 +7,12 @@ use actix_web::{
 use mime::APPLICATION_JSON;
 use tracing_actix_web::TracingLogger;
 
-use crate::unshorten::{get_unshorten_url, post_unshorten_urls};
-
 mod metrics;
 mod tracing;
 mod unshorten;
 
 use metrics::setup_metrics;
+use unshorten::{get_unshorten_url, post_unshorten_urls};
 
 #[actix_web::main]
 async fn main() -> Result<(), io::Error> {
@@ -34,6 +33,7 @@ async fn main() -> Result<(), io::Error> {
             .app_data(web::PathConfig::default().error_handler(path_error_handler))
             .app_data(web::FormConfig::default().error_handler(form_error_handler))
             .app_data(web::QueryConfig::default().error_handler(query_error_handler))
+            .route("/admin/health", web::get().to(health_check))
             .service(web::resource("/api/v1/unshorten").route(web::post().to(post_unshorten_urls)))
             .service(
                 web::resource("/api/v1/unshorten/{url:.*}").route(web::get().to(get_unshorten_url)),
@@ -76,4 +76,8 @@ fn form_error_handler(err: UrlencodedError, req: &HttpRequest) -> actix_web::Err
 
 fn query_error_handler(err: QueryPayloadError, req: &HttpRequest) -> actix_web::Error {
     error_handler(err, req, "InvalidQueryPayload")
+}
+
+async fn health_check() -> HttpResponse {
+    HttpResponse::Ok().finish()
 }
