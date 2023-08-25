@@ -14,7 +14,7 @@ mod unshorten;
 use metrics::setup_metrics;
 use unshorten::{get_unshorten_url, post_unshorten_urls};
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> Result<(), io::Error> {
     // Setup tracing.
     tracing::setup_tracing(
