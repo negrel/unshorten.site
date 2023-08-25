@@ -1,12 +1,13 @@
-import { group, check } from 'k6'
+import { group, check, sleep } from 'k6'
 import http from 'k6/http'
 
-const SERVER_ENDPOINT= 'http://unshorten-site:8080/api/v1'
+const SERVER_HOST= 'unshorten-site:8080'
+const SERVER_ENDPOINT= `http://${SERVER_HOST}/api/v1`
 
 function checkAndLog(v, checks) {
-  if (!check(v, checks)) {
-    console.warn("check failed on", JSON.stringify(v))
-  }
+	if (!check(v, checks)) {
+		console.warn("check failed on", JSON.stringify(v))
+	}
 }
 
 /**
@@ -14,6 +15,7 @@ function checkAndLog(v, checks) {
  * https://k6.io/docs/using-k6/k6-options/
  */
 export const options = {
+	setupTimeout: '60s',
 	thresholds: { checks: ['rate==1.0'] },
 	scenarios: {
 	default: {
@@ -30,7 +32,23 @@ const urls = Object.keys(JSON.parse(open('/etc/urls.json'))).map(k => `http://st
  * Setup function before VUs iterations.
  * @link https://k6.io/docs/using-k6/test-lifecycle/
  */
-export function setup () {}
+export function setup () {
+	while (true) {
+		let response = http.get("http://static-url-shortner:3000/health")
+		if (response.status !== 200) {
+			sleep(3)
+			continue
+		}
+
+		response = http.get(`http://${SERVER_HOST}/admin/health`)
+		if (response.status !== 200) {
+			sleep(3)
+			continue
+		}
+
+		break
+	}
+}
 
 /**
  * Virtual User iteration.

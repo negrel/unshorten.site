@@ -23,3 +23,11 @@ server.listen(PORT, () => {
 	console.log(`Server running at http://localhost:${PORT}`)
 })
 
+// Handle SIGINT signal (CTRL+C)
+process.on('SIGINT', () => {
+  console.log('Received SIGINT signal. Exiting...');
+  server.close(() => {
+    console.log('Server closed.');
+    process.exit(0);
+  });
+});
