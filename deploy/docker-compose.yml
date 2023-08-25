@@ -1,0 +1,18 @@
+version: '3'
+services:
+  traefik:
+    image: "docker.io/library/traefik:v2.10.4"
+    command: --configfile /etc/traefik/config.toml
+    ports:
+      - 80:80
+    volumes:
+      - ./traefik/:/etc/traefik:ro
+
+  unshorten-site:
+    image: "docker.io/negrel/unshorten.site:v0.1.0"
+
+  front:
+    image: "docker.io/library/nginx:1.25.2-alpine"
+    volumes:
+      - ../website/dist/:/usr/share/nginx/html:ro
+

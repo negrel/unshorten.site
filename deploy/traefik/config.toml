@@ -1,0 +1,11 @@
+accesslog = true
+
+[log]
+level = "info"
+
+[api]
+insecure = true
+
+[providers]
+[providers.file]
+filename = "/etc/traefik/services.toml"

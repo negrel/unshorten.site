@@ -1,0 +1,40 @@
+[entryPoints]
+[entryPoints.web]
+address = ":80"
+
+[http.routers]
+[http.routers.front]
+rule = "PathPrefix(`/`)"
+service = "front"
+[http.routers.back]
+rule = "PathPrefix(`/api/v1`)"
+service = "back"
+[http.routers.admin]
+rule = "PathPrefix(`/admin`)"
+service = "admin"
+
+
+[http.services]
+[http.services.front.loadBalancer]
+passHostHeader = false
+[[http.services.front.loadBalancer.servers]]
+url = "http://front"
+
+[http.services.back.loadBalancer]
+passHostHeader = false
+[http.services.back.loadBalancer.healthCheck]
+path = "/admin/health"
+interval = "10s"
+timeout = "3s"
+[[http.services.back.loadBalancer.servers]]
+url = "http://unshorten-site:8080"
+
+[http.services.admin.loadBalancer]
+passHostHeader = false
+[http.services.admin.loadBalancer.healthCheck]
+path = "/admin/health"
+interval = "10s"
+timeout = "3s"
+[[http.services.admin.loadBalancer.servers]]
+url = "http://unshorten-site:8080"
+
