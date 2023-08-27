@@ -9,10 +9,8 @@ services:
       - ./traefik/:/etc/traefik:ro
 
   unshorten-site:
-    image: "docker.io/negrel/unshorten.site:v0.1.0"
+    image: "docker.io/negrel/unshorten.site:latest"
 
   front:
-    image: "docker.io/library/nginx:1.25.2-alpine"
-    volumes:
-      - ../website/dist/:/usr/share/nginx/html:ro
+    image: "docker.io/negrel/nginx-unshorten.site:latest"
 
