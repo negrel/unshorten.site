@@ -1,5 +1,5 @@
-const isLocalServer = window.location.hostname === 'localhost'
-const apiEndpoint = isLocalServer ? "http://localhost/api/v1" : "http://unshorten.site/api/v1"
+const isLocalServer = false && window.location.hostname === 'localhost'
+const apiEndpoint = isLocalServer ? "http://localhost/api/v1" : "/api/v1"
 
 const html = {
   sizeIndicator: `<div class="flex items-center justify-center fixed top-0 right-0 mt-12 mr-8 z-50 w-8 h-8 rounded-full text-gray-700 text-sm uppercase bg-gray-200 sm:bg-orange-200 md:bg-green-200 lg:bg-purple-200 xl:bg-red-200">
@@ -60,8 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.resultsSection.classList.remove('hidden')
     elements.results.innerHTML = results.map(buildResultHTML).join('\n')
   }
-
-  elements.urlsInput.value = ''
 
   elements.unshortenBtn.addEventListener('click', async () => {
     const urls = elements.urlsInput.value.split('\n').map(s => s.trim()).filter(s => s.length > 0)

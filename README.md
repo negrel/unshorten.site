@@ -11,12 +11,14 @@ To learn how to build an industrialized web server in Rust with :
 * tests
 * benchmarks (TODO)
 
+**Deployments** and **builds** are made reproductible using [Docker](https://www.docker.com) and [Nix](https://www.nixos.org).
+
 ## Getting started
 
 ### Building the project
 
 ```shell
-make docker/build
+make docker/build docker/build/website
 ```
 
 ### Running the tests

@@ -2,7 +2,7 @@ version: '3'
 services:
   traefik:
     image: "traefik:v2.10.4"
-    command: --accesslog --providers.docker
+    command: --accesslog --log.level INFO --providers.docker
     ports:
       - 80:80
     volumes:

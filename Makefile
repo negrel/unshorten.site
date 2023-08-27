@@ -10,9 +10,20 @@ dev/start:
 dev/build:
 	cargo build
 
+.PHONY: dev/website
+dev/website:
+	cd website
+	docker compose up
+
 .PHONY: docker/build
 docker/build:
 	nix build .#docker
+	$(DOCKER) load < result
+	rm -f result
+
+.PHONY: docker/build/website
+docker/build/website:
+	nix build .#website-docker
 	$(DOCKER) load < result
 	rm -f result
 
