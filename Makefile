@@ -2,45 +2,19 @@ repository_root := $(shell git rev-parse --show-toplevel)
 repository_root := $(or $(repository_root), $(CURDIR))
 include $(repository_root)/variables.mk
 
-.PHONY: dev/start
-dev/start:
-	cargo run | bunyan
+.PHONY: server/%
+server/%:
+	$(MAKE) -C server $*
 
-.PHONY: dev/build
-dev/build:
-	cargo build
-
-.PHONY: dev/website
-dev/website:
-	cd website
-	docker compose up
-
-.PHONY: docker/build
-docker/build:
-	nix build .#docker
-	$(DOCKER) load < result
-	rm -f result
-
-.PHONY: docker/build/website
-docker/build/website:
-	nix build .#website-docker
-	$(DOCKER) load < result
-	rm -f result
+.PHONY: website/
+website/%:
+	$(MAKE) -C website $*
 
 .PHONY: audit
-audit:
-	cargo audit
-
-.PHONY: lint/rust
-lint/rust:
-	cargo clippy -- -D warnings
-	cargo fmt -- --check
+audit: server/audit
 
 .PHONY: lint
-lint: lint/rust
+lint: server/lint
 
 .PHONY: tests
-tests:
-	cd tests/ && docker compose up --exit-code-from k6
-	cd tests/ && docker compose down
-
+tests: server/test

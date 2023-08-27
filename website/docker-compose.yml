@@ -14,20 +14,17 @@ services:
     # command: /bin/unshorten-site
     volumes: []
       # Uncomment to use local debug binary instead of rebuilding entire image.
-      # - ../target/debug/unshorten-site:/bin/unshorten-site:ro
+      # - ../server/target/debug/unshorten-site:/bin/unshorten-site:ro
 
     labels:
       - "traefik.http.routers.unshorten-site.rule=Host(`localhost`) && PathPrefix(`/api/v1`)"
       - "traefik.http.services.unshorten-site.loadbalancer.server.port=8080"
 
   front:
-    image: "node:lts-alpine"
+    image: "website-devserver:dev"
     working_dir: /app
-    command: "npm run start"
     volumes:
-      - .:/app/:ro
-      - ./.parcel-cache/:/app/.parcel-cache/:rw
-      - ./dist/:/app/dist/:rw
+      - .:/app/:rw
     labels:
       - "traefik.http.routers.front.rule=Host(`localhost`)"
       - "traefik.http.services.front.loadbalancer.server.port=1234"

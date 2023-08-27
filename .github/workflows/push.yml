@@ -15,15 +15,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v21
+        with:
+          extra_nix_config: "system-features = benchmark big-parallel nixos-test uid-range kvm"
+      - name: Lint
+        run: make lint
       - name: Docker build
-        run: make docker/build
+        run: make server/docker/build website/docker/build
       - name: End to end tests
         run: make tests
       - run: docker save unshorten.site:dev > result
       - name: Store docker image as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: docker-image
+          name: server-docker-image
+          path: ./result
+          if-no-files-found: error
+      - run: docker save nginx-unshorten.site:dev > result
+      - name: Store docker image as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: website-docker-image
           path: ./result
           if-no-files-found: error
 

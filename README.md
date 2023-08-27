@@ -18,13 +18,13 @@ To learn how to build an industrialized web server in Rust with :
 ### Building the project
 
 ```shell
-make docker/build docker/build/website
+make server/docker/build website/build/website
 ```
 
 ### Running the tests
 
 ```shell
-make tests
+make server/tests
 ```
 
 ## Contributing
