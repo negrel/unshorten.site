@@ -1,18 +1,25 @@
-[entryPoints]
-[entryPoints.web]
-address = ":80"
+[http.middlewares]
+[http.middlewares.redirect-https.redirectScheme]
+scheme = "https"
+permanent = true
 
 [http.routers]
 [http.routers.front]
-rule = "PathPrefix(`/`)"
+rule = "(Host(`www.unshorten.site`) || Host(`unshorten.site`)) && PathPrefix(`/`)"
 service = "front"
-[http.routers.back]
-rule = "PathPrefix(`/api/v1`)"
-service = "back"
-[http.routers.admin]
-rule = "PathPrefix(`/admin`)"
-service = "admin"
+middlewares = ["redirect-https"]
+[http.routers.front.tls]
+certResolver = "myresolver"
 
+[http.routers.back]
+rule = "(Host(`www.unshorten.site`) || Host(`unshorten.site`)) && PathPrefix(`/api/v1`)"
+service = "back"
+[http.routers.back.tls]
+certResolver = "myresolver"
+
+[http.routers.admin]
+rule = "Host(`localhost`) && PathPrefix(`/admin`)"
+service = "admin"
 
 [http.services]
 [http.services.front.loadBalancer]
@@ -21,7 +28,6 @@ passHostHeader = false
 url = "http://front"
 
 [http.services.back.loadBalancer]
-passHostHeader = false
 [http.services.back.loadBalancer.healthCheck]
 path = "/admin/health"
 interval = "10s"
@@ -30,11 +36,6 @@ timeout = "3s"
 url = "http://unshorten-site:8080"
 
 [http.services.admin.loadBalancer]
-passHostHeader = false
-[http.services.admin.loadBalancer.healthCheck]
-path = "/admin/health"
-interval = "10s"
-timeout = "3s"
 [[http.services.admin.loadBalancer.servers]]
 url = "http://unshorten-site:8080"
 
