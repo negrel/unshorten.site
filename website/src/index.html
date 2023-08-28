@@ -2,38 +2,42 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8" />
-	<title>Unshorten URLs</title>
-	<link href="./index.css" rel="stylesheet">
-	<script src="./script.js" defer async />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="robots" content="index, follow">
+  <meta name="keywords" content="url, unshort, unshortener, unshorten">
+  <meta name="description" content="Unshorten URLs website and API.">
+  <title>Unshorten URLs</title>
+  <link href="./index.css" rel="stylesheet">
+  <script src="./script.js" defer async />
 </head>
 
 <body class="min-h-screen w-screen flex flex-col justify-stretch bg-slate-50 font-serif">
-	<h1 class="font-bold text-4xl w-screen text-center my-16">Unshorten URLs</h1>
+  <h1 class="font-bold text-4xl w-screen text-center my-16">Unshorten URLs</h1>
 
-	<main class="flex flex-col justify-stretch flex-1 px-4 w-full mx-auto sm:max-w-xl md:max-w-4xl">
-		<section class="flex flex-col justify-stretch">
-			<textarea id="urls-input" rows="8" class="border-2 rounded-md p-2 mb-4" placeholder="https://t.ly/phNXO" />
-			<button id="unshorten-btn"
-				class="bg-black text-white font-bold p-2 border-2 border-black focus:border-white focus:border-dashed rounded-md transition-all duration-100 ease-in">
-				Unshorten URLs
-			</button>
-		</section>
-		<section id="results-section" class="hidden flex flex-col justify-stretch">
-			<hr class="border-t border-slate-300 my-4">
-			<h2 class="font-bold text-2xl w-full text-center mb-4">Results</h2>
-			<div id="results" class="mb-4">
-			</div>
-			<button id="clear-btn"
-				class="bg-red-700 text-white font-bold p-2 border-2 border-red-700 focus:border-white focus:border-dashed rounded-md transition-all duration-100 ease-in">
-				Clear
-			</button>
-		</section>
-	</main>
+  <main class="flex flex-col justify-stretch flex-1 px-4 w-full mx-auto sm:max-w-xl md:max-w-4xl">
+    <section class="flex flex-col justify-stretch">
+      <textarea id="urls-input" rows="8" class="border-2 rounded-md p-2 mb-4" placeholder="https://t.ly/phNXO" />
+      <button id="unshorten-btn"
+        class="bg-black text-white font-bold p-2 border-2 border-black focus:border-white focus:border-dashed rounded-md transition-all duration-100 ease-in">
+        Unshorten URLs
+      </button>
+    </section>
+    <section id="results-section" class="hidden flex flex-col justify-stretch">
+      <hr class="border-t border-slate-300 my-4">
+      <h2 class="font-bold text-2xl w-full text-center mb-4">Results</h2>
+      <div id="results" class="mb-4">
+      </div>
+      <button id="clear-btn"
+        class="bg-red-700 text-white font-bold p-2 border-2 border-red-700 focus:border-white focus:border-dashed rounded-md transition-all duration-100 ease-in">
+        Clear
+      </button>
+    </section>
+  </main>
 
-	<footer class="flex flex-col py-4">
-		<p class="text-center">&copy; 2023 unshorten.site - All rights reserved.</p>
-	</footer>
+  <footer class="flex flex-col py-4">
+    <p class="text-center">&copy; 2023 unshorten.site - All rights reserved.</p>
+  </footer>
 </body>
 
 </html>
