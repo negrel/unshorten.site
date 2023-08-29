@@ -10,12 +10,6 @@ dev/start:
 dev/build:
 	cargo build
 
-.PHONY: docker/build
-docker/build:
-	nix build ..#server-docker
-	$(DOCKER) load < result
-	rm -f result
-
 .PHONY: audit
 audit:
 	cargo audit

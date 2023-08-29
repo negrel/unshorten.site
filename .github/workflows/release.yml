@@ -17,7 +17,7 @@ jobs:
           password: "${{ secrets.DOCKERHUB_PASSWORD }}"
       - uses: dawidd6/action-download-artifact@v2
         with:
-          name: server-docker-image
+          name: docker-image
           workflow: push.yml
       - run: docker load < result
       - name: Publish server to docker hub
@@ -26,13 +26,4 @@ jobs:
             docker tag "unshorten.site:dev" "docker.io/negrel/unshorten.site:$tag"
             docker push "docker.io/negrel/unshorten.site:$tag"
           done
-      - uses: dawidd6/action-download-artifact@v2
-        with:
-          name: website-docker-image
-          workflow: push.yml
-      - run: docker load < result
-      - name: Publish website to docker hub
-        run: |
-          docker tag "nginx-unshorten.site:dev" "docker.io/negrel/nginx-unshorten.site:latest"
-          docker push "docker.io/negrel/nginx-unshorten.site:latest"
 

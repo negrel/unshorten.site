@@ -20,21 +20,13 @@ jobs:
       - name: Lint
         run: make lint
       - name: Docker build
-        run: make server/docker/build website/docker/build
+        run: REMOVE_RESULT=0 make docker/build
       - name: End to end tests
         run: make tests
-      - run: docker save unshorten.site:dev > result
       - name: Store docker image as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: server-docker-image
-          path: ./result
-          if-no-files-found: error
-      - run: docker save nginx-unshorten.site:dev > result
-      - name: Store docker image as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: website-docker-image
+          name: docker-image
           path: ./result
           if-no-files-found: error
 

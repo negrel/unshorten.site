@@ -8,15 +8,6 @@ rec {
     pname = "unshorten.site";
     version = "0.1.0";
     src = ./.;
-    cargoSha256 = "sha256-2m20Bq9JFEaP+jJ0zkrllPgu2BijYjAQsSyTZoaUPVA=";
-  };
-
-  server-docker = pkgs.dockerTools.buildImage {
-    name = "unshorten.site";
-    tag = "dev";
-    config = {
-      Cmd = [ "${server-bin}/bin/unshorten-site" ];
-      WorkingDir = "/app";
-    };
+    cargoSha256 = "sha256-Tx1cHGrOdsukzUV+MUL8moy195g70PwnmbxmDl1tnqU=";
   };
 }

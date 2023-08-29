@@ -13,8 +13,3 @@ dev/start:
 dev/build:
 	npm run build
 
-.PHONY: docker/build
-docker/build:
-	nix build ..#website-docker
-	$(DOCKER) load < result
-	rm -f result

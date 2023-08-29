@@ -11,7 +11,7 @@
     };
   };
 
-  outputs = { flake-utils, nixpkgs, fenix, ... }@inputs:
+  outputs = { self, flake-utils, nixpkgs, fenix, ... }@inputs:
     flake-utils.lib.eachDefaultSystem
       (system:
         let
@@ -39,7 +39,22 @@
             };
           };
           packages = pkgs.callPackage ./server/packages.nix { inherit pkgs fenixPkgs; }
-            // pkgs.callPackage ./website/packages.nix { inherit pkgs; };
+            // pkgs.callPackage ./website/packages.nix { inherit pkgs; } // {
+            docker = pkgs.dockerTools.buildImage {
+              name = "unshorten.site";
+              tag = "dev";
+
+              runAsRoot = ''
+                mkdir -p /usr/share/actix/static
+                cp -r ${self.packages.${system}.website}/* /usr/share/actix/static
+              '';
+
+              config = {
+                Cmd = [ "${self.packages.${system}.server-bin}/bin/unshorten-site" ];
+                WorkingDir = "/app";
+              };
+            };
+          };
         });
 }
 

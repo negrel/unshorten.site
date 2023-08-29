@@ -18,3 +18,9 @@ lint: server/lint
 
 .PHONY: tests
 tests: server/test
+
+.PHONY: docker/build
+docker/build:
+	nix build .#docker
+	docker load < result
+	if [ "${REMOVE_RESULT:=1}" = "1" ]; then rm -f result; fi

@@ -40,25 +40,4 @@ rec {
       Cmd = [ "${pkgs.bash}/bin/bash" "-c" "npm install && npm start" ];
     };
   };
-
-  website-docker = pkgs.dockerTools.buildImage {
-    name = "nginx-unshorten.site";
-    tag = "dev";
-
-    fromImage = pkgs.dockerTools.pullImage {
-      imageName = "docker.io/library/nginx";
-      imageDigest =
-        "sha256:cac882be2b7305e0c8d3e3cd0575a2fd58f5fde6dd5d6299605aa0f3e67ca385";
-      sha256 = "sha256-eGZpg+x7c8ZQk5mPctNFGQbVzE+n3SXJRa7ZORINgH8=";
-    };
-
-    runAsRoot = ''
-      mkdir -p /usr/share/nginx/html
-      cp -r ${website}/* /usr/share/nginx/html
-    '';
-
-    config = {
-      Cmd = [ "nginx" "-g" "daemon off;" ];
-    };
-  };
 }

@@ -1,5 +1,6 @@
 use std::{error::Error, io};
 
+use actix_files::Files;
 use actix_web::{
     error::{InternalError, JsonPayloadError, PathError, QueryPayloadError, UrlencodedError},
     web, App, HttpRequest, HttpResponse, HttpServer,
@@ -37,6 +38,11 @@ async fn main() -> Result<(), io::Error> {
             .service(web::resource("/api/v1/unshorten").route(web::post().to(post_unshorten_urls)))
             .service(
                 web::resource("/api/v1/unshorten/{url:.*}").route(web::get().to(get_unshorten_url)),
+            )
+            .service(
+                Files::new("/", "/usr/share/actix/static")
+                    .prefer_utf8(true)
+                    .index_file("index.html"),
             )
     })
     .bind(("0.0.0.0", 8080))?;
