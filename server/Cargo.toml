@@ -13,8 +13,8 @@ authors = ["Alexandre Negrel <alexandre@negrel.dev>"]
 
 [dependencies]
 actix-web = "4"
-serde = { version = "1.0.183", features = ["derive"] }
-thiserror = "1.0.47"
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
 url = { version = "2", features = ["serde"] }
 mime = "0.3"
 # Tracing (part of tokio ecosystem).
@@ -29,7 +29,8 @@ tracing-bunyan-formatter = "0.3"
 tracing-actix-web = "0.7"
 futures = "0.3"
 reqwest = { version = "0.11", features = ["rustls-tls"], default-features = false }
-actix-web-prom = "0.7.0"
-tokio = { version = "1.32.0", features = ["rt", "rt-multi-thread", "tokio-macros", "macros"] }
-actix-files = "0.6.2"
+actix-web-prom = "0.7"
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "tokio-macros", "macros"] }
+actix-files = "0.6"
+actix-web-httpauth = "0.8"
 

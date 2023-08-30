@@ -1,10 +1,18 @@
-use std::{error::Error, io};
+use std::{
+    env,
+    error::Error,
+    fmt,
+    future::{ready, Ready},
+    io,
+};
 
 use actix_files::Files;
 use actix_web::{
     error::{InternalError, JsonPayloadError, PathError, QueryPayloadError, UrlencodedError},
-    web, App, HttpRequest, HttpResponse, HttpServer,
+    http::StatusCode,
+    web, App, FromRequest, HttpRequest, HttpResponse, HttpServer, ResponseError,
 };
+use actix_web_httpauth::{extractors::basic::BasicAuth, middleware::HttpAuthentication};
 use mime::APPLICATION_JSON;
 use tracing_actix_web::TracingLogger;
 
@@ -27,7 +35,30 @@ async fn main() -> Result<(), io::Error> {
     let prometheus_metrics = setup_metrics();
 
     let server = HttpServer::new(move || {
+        let admin_auth_middleware = {
+            let admin_login = env::var("UNSHORTEN_ADMIN_LOGIN")
+                .expect("UNSHORTEN_ADMIN_LOGIN environment variable is not set");
+            let admin_passwd = env::var("UNSHORTEN_ADMIN_PASSWORD")
+                .expect("UNSHORTEN_ADMIN_PASSWORD environment variable is not set");
+
+            HttpAuthentication::with_fn(move |req, credentials: AdminAuth| {
+                let credentials = credentials.0;
+
+                if let Some(password) = credentials.password() {
+                    if credentials.user_id() == admin_login && password == admin_passwd {
+                        return ready(Ok(req));
+                    }
+                }
+
+                ready(Err((
+                    actix_web::error::Error::from(AdminAuthenticationError),
+                    req,
+                )))
+            })
+        };
+
         App::new()
+            .wrap(admin_auth_middleware)
             .wrap(TracingLogger::default())
             .wrap(prometheus_metrics.clone())
             .app_data(web::JsonConfig::default().error_handler(json_error_handler))
@@ -86,4 +117,40 @@ fn query_error_handler(err: QueryPayloadError, req: &HttpRequest) -> actix_web::
 
 async fn health_check() -> HttpResponse {
     HttpResponse::Ok().finish()
+}
+
+#[derive(Debug)]
+pub struct AdminAuthenticationError;
+
+impl ResponseError for AdminAuthenticationError {
+    fn status_code(&self) -> StatusCode {
+        // Hide admin interface.
+        StatusCode::NOT_FOUND
+    }
+
+    fn error_response(&self) -> HttpResponse<actix_web::body::BoxBody> {
+        HttpResponse::build(self.status_code()).finish()
+    }
+}
+
+impl fmt::Display for AdminAuthenticationError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(&self.status_code(), f)
+    }
+}
+
+#[derive(Debug)]
+struct AdminAuth(BasicAuth);
+
+impl FromRequest for AdminAuth {
+    type Error = AdminAuthenticationError;
+
+    type Future = Ready<Result<Self, Self::Error>>;
+
+    fn from_request(req: &HttpRequest, payload: &mut actix_web::dev::Payload) -> Self::Future {
+        match BasicAuth::from_request(req, payload).into_inner() {
+            Ok(auth) => ready(Ok(AdminAuth(auth))),
+            Err(_) => ready(Err(AdminAuthenticationError)),
+        }
+    }
 }
