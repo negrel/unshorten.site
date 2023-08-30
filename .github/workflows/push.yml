@@ -18,11 +18,11 @@ jobs:
         with:
           extra_nix_config: "system-features = benchmark big-parallel nixos-test uid-range kvm"
       - name: Lint
-        run: make lint
+        run: nix develop --command make lint
       - name: Docker build
         run: REMOVE_RESULT=0 make docker/build
       - name: End to end tests
-        run: make tests
+        run: nix develop --command make tests
       - name: Store docker image as artifact
         uses: actions/upload-artifact@v3
         with:

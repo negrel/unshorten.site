@@ -1,11 +1,20 @@
 import { group, check, sleep } from 'k6'
 import http from 'k6/http'
 
-const SERVER_HOST= 'unshorten-site:8080'
-const SERVER_ENDPOINT= `http://${SERVER_HOST}/api/v1`
+const SERVER_HOST= 'unshorten-site:8443'
+const SERVER_ENDPOINT= `https://${SERVER_HOST}/api/v1`
+const {
+  UNSHORTEN_ADMIN_LOGIN,
+  UNSHORTEN_ADMIN_PASSWORD,
+} = __ENV
 
 function checkAndLog(v, checks) {
+	try {
 	if (!check(v, checks)) {
+		console.warn("check failed on", JSON.stringify(v))
+	}
+	} catch (err) {
+		console.error(`error thrown on check: ${err}`)
 		console.warn("check failed on", JSON.stringify(v))
 	}
 }
@@ -23,7 +32,10 @@ export const options = {
 		vus: 1,
 		iterations: 1
 		}
-	}
+	},
+	tlsVersion: {
+		min: http.TLS_1_2,
+	},
 }
 
 const urls = Object.keys(JSON.parse(open('/etc/urls.json'))).map(k => `http://static-url-shortner:3000/${k}`)
@@ -40,7 +52,7 @@ export function setup () {
 			continue
 		}
 
-		response = http.get(`http://${SERVER_HOST}/admin/health`)
+		response = http.get(`https://${UNSHORTEN_ADMIN_LOGIN}:${UNSHORTEN_ADMIN_PASSWORD}@${SERVER_HOST}/admin/health`)
 		if (response.status !== 200) {
 			sleep(3)
 			continue

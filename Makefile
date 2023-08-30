@@ -23,4 +23,4 @@ tests: server/test
 docker/build:
 	nix build .#docker
 	docker load < result
-	if [ "${REMOVE_RESULT:=1}" = "1" ]; then rm -f result; fi
+	if [ "$${REMOVE_RESULT:=1}" = "1" ]; then rm -f result; fi

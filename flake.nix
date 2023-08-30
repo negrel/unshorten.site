@@ -30,6 +30,7 @@
               buildInputs = with pkgs; [
                 bunyan-rs
                 nodejs
+                mkcert
               ] ++ pkgBuildInputs ++ (
                 with pkgs.fenix; [
                   complete.toolchain

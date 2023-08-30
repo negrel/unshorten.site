@@ -8,6 +8,8 @@ To learn how to build an industrialized web server in Rust with :
 * tracing
 * metrics
 * access logs
+* hidden admin interface
+* TLS support
 * tests
 * benchmarks (TODO)
 
@@ -18,13 +20,13 @@ To learn how to build an industrialized web server in Rust with :
 ### Building the project
 
 ```shell
-make server/docker/build website/build/website
+make docker/build
 ```
 
 ### Running the tests
 
 ```shell
-make server/tests
+make tests
 ```
 
 ## Contributing

@@ -8,6 +8,6 @@ rec {
     pname = "unshorten.site";
     version = "0.1.0";
     src = ./.;
-    cargoSha256 = "sha256-Tx1cHGrOdsukzUV+MUL8moy195g70PwnmbxmDl1tnqU=";
+    cargoSha256 = "sha256-dZ/Mu+IiGlVShU5gek7p+iG610Z4orXb+YN2Ix0egBs=";
   };
 }
