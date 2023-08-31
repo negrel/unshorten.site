@@ -39,9 +39,8 @@ async fn main() -> Result<(), io::Error> {
     );
 
     let prometheus_metrics = setup_metrics();
-    let tls_config = load_rustls_config();
 
-    let server = HttpServer::new(move || {
+    let mut server = HttpServer::new(move || {
         App::new()
             .wrap(prometheus_metrics.clone())
             .wrap(admin_authentication_middleware())
@@ -61,10 +60,16 @@ async fn main() -> Result<(), io::Error> {
                     .index_file("index.html"),
             )
     })
-    .bind("0.0.0.0:8080")?
-    .bind_rustls_021("0.0.0.0:8443", tls_config)?;
+    .bind("0.0.0.0:8080")?;
 
-    ::tracing::info!("Server listening at http://0.0.0.0:8080 and https://0.0.0.0:8443");
+    if let Some(tls_config) = load_rustls_config() {
+        server = server.bind_rustls_021("0.0.0.0:8443", tls_config)?;
+        ::tracing::info!("Server listening at http://0.0.0.0:8080 and https://0.0.0.0:8443");
+    } else {
+        ::tracing::warn!("no TLS configuration");
+        ::tracing::info!("Server listening at http://0.0.0.0:8080");
+    }
+
     server.run().await
 }
 
@@ -139,7 +144,7 @@ fn admin_authentication_middleware() -> HttpAuthentication<
     })
 }
 
-fn load_rustls_config() -> rustls::ServerConfig {
+fn load_rustls_config() -> Option<rustls::ServerConfig> {
     // init server config builder with safe defaults
     let config = ServerConfig::builder()
         .with_safe_defaults()
@@ -147,12 +152,15 @@ fn load_rustls_config() -> rustls::ServerConfig {
 
     // load TLS key/cert files
     let key_filepath = env::var("UNSHORTEN_TLS_KEY_FILEPATH")
-        .expect("UNSHORTEN_TLS_KEY_FILEPATH environment variable is not set");
+        .map(Some)
+        .unwrap_or(None)?;
     let cert_filepath = env::var("UNSHORTEN_TLS_CERT_FILEPATH")
-        .expect("UNSHORTEN_TLS_CERT_FILEPATH environment variable is not set");
+        .map(Some)
+        .unwrap_or(None)?;
 
-    let cert_file = &mut BufReader::new(File::open(cert_filepath).unwrap());
-    let key_file = &mut BufReader::new(File::open(key_filepath).unwrap());
+    let cert_file =
+        &mut BufReader::new(File::open(cert_filepath).expect("TLS cert file not found"));
+    let key_file = &mut BufReader::new(File::open(key_filepath).expect("TLS key file not found"));
 
     // convert files to key/cert objects
     let cert_chain = certs(cert_file)
@@ -172,7 +180,7 @@ fn load_rustls_config() -> rustls::ServerConfig {
         std::process::exit(1);
     }
 
-    config.with_single_cert(cert_chain, keys.remove(0)).unwrap()
+    Some(config.with_single_cert(cert_chain, keys.remove(0)).unwrap())
 }
 
 #[derive(Debug)]

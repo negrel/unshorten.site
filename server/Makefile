@@ -8,9 +8,8 @@ UNSHORTEN_TLS_KEY_FILEPATH ?= "certs/key.pem"
 UNSHORTEN_TLS_CERT_FILEPATH ?= "certs/cert.pem"
 
 .PHONY: dev/start
-dev/start: certs
-	UNSHORTEN_ADMIN_LOGIN=$(UNSHORTEN_ADMIN_LOGIN) UNSHORTEN_ADMIN_PASSWORD=$(UNSHORTEN_ADMIN_PASSWORD) \
-		UNSHORTEN_TLS_KEY_FILEPATH=$(UNSHORTEN_TLS_KEY_FILEPATH) UNSHORTEN_TLS_CERT_FILEPATH=$(UNSHORTEN_TLS_CERT_FILEPATH) \
+dev/start:
+	test -f certs/env.sh && source certs/env.sh; UNSHORTEN_ADMIN_LOGIN=$(UNSHORTEN_ADMIN_LOGIN) UNSHORTEN_ADMIN_PASSWORD=$(UNSHORTEN_ADMIN_PASSWORD) \
 		cargo run | bunyan
 
 .PHONY: dev/build
@@ -34,3 +33,6 @@ test: certs
 certs:
 	mkdir -p certs
 	mkcert -key-file certs/key.pem -cert-file certs/cert.pem 127.0.0.1 localhost unshorten-site
+	echo "export UNSHORTEN_TLS_KEY_FILEPATH=certs/key.pem" > certs/env.sh
+	echo "export UNSHORTEN_TLS_CERT_FILEPATH=certs/cert.pem" >> certs/env.sh
+
