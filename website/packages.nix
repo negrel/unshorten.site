@@ -9,7 +9,7 @@ rec {
     ];
 
     src = ./.;
-    npmDepsHash = "sha256-5eoAU3BPGvSQmMEjWnEjkjAZso4HYjhRY8U1p0R80To";
+    npmDepsHash = "sha256-u4rZNRsk/2wq/EoiThJ0aCRu32c3bK1Vs+HBomtxP2Y=";
 
     installPhase = ''
       runHook preInstall
