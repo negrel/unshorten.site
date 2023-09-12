@@ -11,10 +11,14 @@ services:
   unshorten-site:
     image: "unshorten.site:dev"
     # Uncomment to use local debug binary instead of rebuilding entire image.
-    # command: /bin/unshorten-site
-    volumes: []
+    command: /bin/unshorten-site
+    volumes: # []
       # Uncomment to use local debug binary instead of rebuilding entire image.
-      # - ../server/target/debug/unshorten-site:/bin/unshorten-site:ro
+      - ../server/target/debug/unshorten-site:/bin/unshorten-site:ro
+
+    environment:
+      UNSHORTEN_ADMIN_LOGIN: "admin"
+      UNSHORTEN_ADMIN_PASSWORD: "admin"
 
     labels:
       - "traefik.http.routers.unshorten-site.rule=Host(`localhost`) && PathPrefix(`/api/v1`)"
