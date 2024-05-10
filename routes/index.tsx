@@ -1,5 +1,8 @@
 import Button from "@/components/Button.tsx";
 import { Handlers, PageProps } from "$fresh/server.ts";
+import FacebookIcon from "@/components/FacebookIcon.tsx";
+import TwitterIcon from "@/components/TwitterIcon.tsx";
+import RedditIcon from "@/components/RedditIcon.tsx";
 
 interface Data {
   results?: string[];
@@ -181,6 +184,44 @@ export default function Home({ data }: PageProps<Data>) {
               here
             </a>
           </p>
+        </section>
+        <section className="mt-8">
+          <h2 className="text-xl font-bold text-center">Like it? Share it!</h2>
+          <ul class="flex flex-nowrap gap-6 justify-center mt-6">
+            <li>
+              <a
+                data-share=""
+                rel="noopener"
+                target="_blank"
+                href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.unshorten.site%2F"
+                title="Please share this page via Facebook"
+              >
+                <FacebookIcon className="text-blue-500 w-8 h-8 hover:scale-125 transition-all" />
+              </a>
+            </li>
+            <li class="share__item">
+              <a
+                data-share=""
+                rel="noopener"
+                target="_blank"
+                href="https://twitter.com/share?text=Online%20Image%20%D0%A1ompressor&amp;url=https%3A%2F%2Fwww.unshorten.site%2F"
+                title="Please share this page via Twitter"
+              >
+                <TwitterIcon className="w-8 h-8 hover:scale-125 transition-all" />
+              </a>
+            </li>
+            <li class="share__item">
+              <a
+                data-share=""
+                rel="noopener"
+                target="_blank"
+                href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.unshorten.site%2F&amp;title=URLs%20unshortener"
+                title="Please share this page via Reddit"
+              >
+                <RedditIcon className="text-red-500 w-10 h-10 hover:scale-125 transition-all pb-1" />
+              </a>
+            </li>
+          </ul>
         </section>
       </main>
     </>
