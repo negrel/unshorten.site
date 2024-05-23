@@ -3,6 +3,8 @@ import PrismeBanner from "@/components/PrismeBanner.tsx";
 import Header from "@/components/Header.tsx";
 import Footer from "@/components/Footer.tsx";
 
+const PRISME_ANALYTICS = Deno.env.get("PRISME_ANALYTICS");
+
 export default function App({ Component }: PageProps) {
   return (
     <html>
@@ -44,6 +46,15 @@ export default function App({ Component }: PageProps) {
         />
         <meta name="theme-color" content="#ffffff" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        {PRISME_ANALYTICS !== undefined &&
+          (
+            <script
+              src="https://app.prismeanalytics.com/static/m.js"
+              data-prisme-verification-id={PRISME_ANALYTICS}
+              async
+            >
+            </script>
+          )}
       </head>
       <body className="bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-slate-50 relative pb-24">
         <PrismeBanner />
