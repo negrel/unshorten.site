@@ -12,7 +12,10 @@ function Footer() {
         >
           Source code
         </a>
-        <a href="https://www.negrel.dev/#contact" className="underline">
+        <a
+          href="https://www.negrel.dev/feedback/?project=unshorten.site"
+          className="underline"
+        >
           Feedback
         </a>
         <a
