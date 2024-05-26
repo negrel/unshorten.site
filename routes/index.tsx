@@ -204,7 +204,7 @@ export default function Home({ data }: PageProps<Data>) {
                 data-share=""
                 rel="noopener"
                 target="_blank"
-                href="https://twitter.com/share?text=Online%20Image%20%D0%A1ompressor&amp;url=https%3A%2F%2Fwww.unshorten.site%2F"
+                href="https://twitter.com/share?text=URLs%20Unshortener&amp;url=https%3A%2F%2Fwww.unshorten.site%2F"
                 title="Please share this page via Twitter"
               >
                 <TwitterIcon className="w-8 h-8 hover:scale-125 transition-all" />
