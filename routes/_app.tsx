@@ -56,7 +56,7 @@ export default function App({ Component }: PageProps) {
             </script>
           )}
       </head>
-      <body className="bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-slate-50 relative pb-24">
+      <body className="bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-slate-50 relative pb-40 sm:pb-24">
         <PrismeBanner />
         <Header />
         <Component />
