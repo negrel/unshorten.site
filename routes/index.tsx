@@ -51,7 +51,9 @@ export default function Home({ data }: PageProps<Data>) {
                 Here is your unshortened URLs:
               </h2>
               {data.results.map((result) => (
-                <a href={result} className="underline">{result}</a>
+                <a href={result} target="_blank" className="underline">
+                  {result}
+                </a>
               ))}
             </>
           )
